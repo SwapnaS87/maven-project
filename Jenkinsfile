@@ -9,8 +9,8 @@ pipeline {
     stages {
 
           stage("Build") {
-                 steps {             	
-					  echo "Building an applicaction using maven"
+                 steps {         
+		      echo "Building an applicaction using maven"
                       sh 'mvn clean package'	
                  }
                  post {
