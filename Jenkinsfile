@@ -10,7 +10,7 @@ pipeline {
 
           stage("Build") {
                  steps {             	
- 	       echo "Building an applicaction using maven"
+					  echo "Building an applicaction using maven"
                       sh 'mvn clean package'	
                  }
                  post {
@@ -23,11 +23,10 @@ pipeline {
 							echo "Failed to generate an artifact"
                          }
                  }
-          }          
-    }
-	
-	stage("Deploy to Staging and perform code analysis") {
-		parallel {
+          } 
+
+          stage("Deploy to Staging and perform code analysis") {
+			parallel {
 		
 			stage("Deploy to staging") {
 				steps {
@@ -64,16 +63,20 @@ pipeline {
 			}
 			
 			deploy adapters: [tomcat8(credentialsId: 'f6c8fecb-0eeb-4098-b0d3-75567d5f80bd', path: '', url: 'http://ec2-52-14-22-67.us-east-2.compute.amazonaws.com:9999/')], contextPath: null, onFailure: false, war: '**/*.war'			
-		} 
+		}
+		post {
+			success {
+				echo "Application is deployed successfully on Tomcat in production environment"
+			}
+			failure {
+				echo "Failed to deploy an application on Tomcat in production environment"
+			}
+	    }		
     }
-	post {
-	    success {
-			echo "Application is deployed successfully on Tomcat in production environment"
-		}
-		failure {
-		 	echo "Failed to deploy an application on Tomcat in production environment"
-		}
-	}
+			  
+ }
+	
+	
 }
 
 
